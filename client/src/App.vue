@@ -1,23 +1,36 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
+    <ChatWindow channel="#general" :userSession="userSession" />
   </div>
 </template>
 
 <script>
+import ChatWindow from '@/components/ChatWindow.vue'
+import UserService from '@/services/User'
+
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    ChatWindow
+  },
+  data () {
+    return {
+      userSession: {},
+    }
+  },
+  mounted () {
+    this.getUserSession()
+  },
+  methods: {
+    async getUserSession () {
+      const response = await UserService.fetchSession()
+      console.log(response)
+      this.userSession = response.data
+    }
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
