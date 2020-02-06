@@ -5,6 +5,7 @@
 <script>
 import ChatWindow from '@/components/ChatWindow.vue'
 import UserService from '@/services/User'
+// import Nexmo from 'nexmo-client'
 
 export default {
   name: 'Nexmo',
