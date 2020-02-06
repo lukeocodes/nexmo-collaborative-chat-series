@@ -17,7 +17,7 @@ export default {
   name: 'ChatWindow',
   props: {
     channel: String,
-    user: Object
+    userSession: Object
   },
   components: {
     ChatWindowHeader,

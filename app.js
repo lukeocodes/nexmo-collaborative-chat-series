@@ -9,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/api/user', require('./routes/user'));
+app.use('/api/server', require('./routes/server'));
 
 // catch 404 and forward to error handler
 app.use(/^\/api(.*)/, (req, res, next) => {

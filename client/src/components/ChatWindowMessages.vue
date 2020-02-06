@@ -6,13 +6,13 @@
 </template>
 
 <script>
-import Message from '@/components/Message.vue'
+// import Message from '@/components/Message.vue'
 
 export default {
-  name: 'ChatWindowMessages',
-  components: {
-    Message
-  }
+  name: 'ChatWindowMessages'
+  // components: {
+  //   Message
+  // }
 }
 </script>
 

@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev:server": "nodemon ./bin/www",
-    "dev:client": "cd client && npm start",
+    "dev:client": "cd client && npm run serve",
     "dev": "concurrently --kill-others-on-fail 'npm run dev:server' 'npm run dev:client'",
     "prestart": "cd client && npm run build",
     "start": "node ./bin/www",
