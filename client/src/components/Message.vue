@@ -9,7 +9,6 @@
           <p class="text-black leading-normal">{{message.text}}</p>
           <div v-if="message.code" class="bg-grey-lighter border border-grey-light text-grey-darkest text-sm font-mono rounded p-3 mt-2 whitespace-pre overflow-scroll">{{message.code}}</div>
       </div>
-      </div>
   </div>
 </template>
 

@@ -13,7 +13,7 @@
 export default {
   name: 'ChatWindowFooter',
   props: {
-    channel: String,
+    channel: String
   }
 }
 </script>
