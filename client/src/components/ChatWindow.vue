@@ -3,7 +3,7 @@
     <!-- Top bar -->
     <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
     <!-- Chat messages -->
-    <ChatWindowMessages />
+    <ChatWindowMessages :events="events" :user="user" />
     <ChatWindowFooter :conversation="conversation" />
   </div>
 </template>
@@ -24,9 +24,36 @@ export default {
     ChatWindowFooter,
     ChatWindowMessages
   },
-  // mounted () {
-  //   this.login()
-  // }
+  data () {
+    return {
+      user: {},
+      lastEventPage: {},
+      events: [],
+    }
+  },
+  mounted () {
+    this.user = this.$props.app.me
+    this.getEventHistory()
+  },
+  methods: {
+    getEventHistory () {
+      this.$props.conversation
+        .getEvents({ page_size: 20, order: 'desc' })
+        .then((eventsPage) => {
+          this.lastEventPage = eventsPage;
+
+          eventsPage.items.forEach(event => {
+            this.events.push(event);
+          });
+
+          console.log(this.events) // eslint-disable-line no-console
+        })
+        .catch((err) => {
+          console.error(err) // eslint-disable-line no-console
+          // this.$parent.error = { title: 'Chat Service Error', message: err.reason }
+        })
+    }
+  }
 }
 </script>
 
