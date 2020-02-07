@@ -1,12 +1,18 @@
 <template>
-  <div class="flex items-start mb-4 text-sm">
-    member joined
-  </div>
+  <EventMessage v-if="event.type === 'message'" :event="event" :user="user" />
+  <EventMemberJoined v-else-if="event.type === 'member:joined'" :event="event" :user="user" />
 </template>
 
 <script>
+import EventMemberJoined from '@/components/EventMemberJoined.vue'
+import EventMessage from '@/components/EventMessage.vue'
+
 export default {
   name: 'Event',
+  components: {
+    EventMemberJoined,
+    EventMessage
+  },
   props: {
     event: Object,
     user: Object

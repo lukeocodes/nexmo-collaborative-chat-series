@@ -41,8 +41,9 @@ export default {
         .getEvents({ page_size: 20, order: 'asc' })
         .then((eventsPage) => {
           eventsPage.items.forEach(event => {
-            this.events.push(event);
-          });
+            console.log(event) // eslint-disable-line no-console
+            this.events.push(event)
+          })
         })
         .catch((err) => {
           console.error(err) // eslint-disable-line no-console
@@ -53,12 +54,12 @@ export default {
       const { conversation } = this.$props
 
       conversation.on('text', (user, event) => {
-        this.events.push(event);
-      });
+        this.events.push(event)
+      })
 
       conversation.on("member:joined", (user, event) => {
-        this.events.push(event);
-      });
+        this.events.push(event)
+      })
     }
   }
 }

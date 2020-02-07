@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-start mb-4 text-sm">
-    member joined
-  </div>
+  <p class="mb-4 text-sm">
+    {{ event.body.user.display_name }} has joined #{{ event.conversation.display_name }}.
+  </p>
 </template>
 
 <script>

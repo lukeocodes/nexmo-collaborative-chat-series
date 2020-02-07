@@ -1,6 +1,6 @@
 <template>
   <div class="px-6 py-4 flex-grow overflow-y-scroll">
-    <Event v-for="event in events" v-bind:key="event.id" :event="event" />
+    <Event v-for="event in events" v-bind:key="event.id" :event="event" :user="user" />
   </div>
 </template>
 
