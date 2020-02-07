@@ -8,6 +8,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use('/api/webhook', require('./routes/webhook'));
 app.use('/api/user', require('./routes/user'));
 app.use('/api/server', require('./routes/server'));
 

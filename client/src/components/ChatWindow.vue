@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col min-h-screen bg-white overflow-hidden">
     <!-- Top bar -->
-    <ChatWindowHeader :channel="channel" description="Chit-chattin' about ugly HTML and mixing of concerns."/>
+    <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
     <!-- Chat messages -->
     <ChatWindowMessages />
-    <ChatWindowFooter :channel="channel" />
+    <ChatWindowFooter :conversation="conversation" />
   </div>
 </template>
 
@@ -16,14 +16,17 @@ import ChatWindowMessages from '@/components/ChatWindowMessages.vue'
 export default {
   name: 'ChatWindow',
   props: {
-    channel: String,
-    userSession: Object
+    app: Object,
+    conversation: Object
   },
   components: {
     ChatWindowHeader,
     ChatWindowFooter,
     ChatWindowMessages
-  }
+  },
+  // mounted () {
+  //   this.login()
+  // }
 }
 </script>
 

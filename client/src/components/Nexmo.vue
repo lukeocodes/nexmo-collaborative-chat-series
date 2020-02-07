@@ -1,30 +1,62 @@
 <template>
-  <ChatWindow channel="#general" :userSession="userSession" />
+  <div>
+    <ChatWindow v-if="!!app && !!conversation" :app="app" :conversation="conversation" />
+    <template v-else>
+      <Loading v-if="!error" message="Logging you in..." />
+      <Error v-else :error="error" />
+    </template>
+  </div>
 </template>
 
 <script>
 import ChatWindow from '@/components/ChatWindow.vue'
+import Loading from '@/components/Loading.vue'
+import Error from '@/components/Error.vue'
 import UserService from '@/services/User'
-// import Nexmo from 'nexmo-client'
+import NexmoClient from 'nexmo-client'
 
 export default {
   name: 'Nexmo',
+  props: {
+    server: Object
+  },
   components: {
-    ChatWindow
+    ChatWindow,
+    Error,
+    Loading
   },
   data () {
     return {
-      userSession: {}
+      app: null,
+      conversation: null,
+      error: null
     }
   },
   mounted () {
-    this.getUserSession()
+    this.login()
   },
   methods: {
-    async getUserSession () {
-      const response = await UserService.fetchSession()
-      // console.log(response.data)
-      this.userSession = response.data
+    login () {
+      UserService.fetchSession()
+        .then((response) => {
+          const { token } = response.data
+
+          new NexmoClient({ debug: true })
+            .login(token)
+            .then(app => {
+              this.app = app
+              return app.getConversation(this.$props.server.defaultConversationId)
+            })
+            .then((conversation) => {
+              this.conversation = conversation
+            })
+            .catch((err) => {
+              this.error = { title: 'Chat Service Error', message: err.message }
+            })
+        })
+        .catch((err) => {
+          this.error = { title: 'Chat Service Error', message: err.reason }
+        })
     }
   }
 }
