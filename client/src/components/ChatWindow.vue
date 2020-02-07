@@ -1,8 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen bg-white overflow-hidden">
-    <!-- Top bar -->
     <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
-    <!-- Chat messages -->
     <ChatWindowEvents :events="events" :user="user" />
     <ChatWindowFooter :conversation="conversation" />
   </div>
@@ -10,8 +8,8 @@
 
 <script>
 import ChatWindowHeader from '@/components/ChatWindowHeader.vue'
-import ChatWindowFooter from '@/components/ChatWindowFooter.vue'
 import ChatWindowEvents from '@/components/ChatWindowEvents.vue'
+import ChatWindowFooter from '@/components/ChatWindowFooter.vue'
 
 export default {
   name: 'ChatWindow',
@@ -21,8 +19,8 @@ export default {
   },
   components: {
     ChatWindowHeader,
-    ChatWindowFooter,
-    ChatWindowEvents
+    ChatWindowEvents,
+    ChatWindowFooter
   },
   data () {
     return {
