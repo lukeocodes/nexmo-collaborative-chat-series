@@ -3,7 +3,7 @@
     <!-- Top bar -->
     <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
     <!-- Chat messages -->
-    <ChatWindowMessages :events="events" :user="user" />
+    <ChatWindowEvents :events="events" :user="user" />
     <ChatWindowFooter :conversation="conversation" />
   </div>
 </template>
@@ -11,7 +11,7 @@
 <script>
 import ChatWindowHeader from '@/components/ChatWindowHeader.vue'
 import ChatWindowFooter from '@/components/ChatWindowFooter.vue'
-import ChatWindowMessages from '@/components/ChatWindowMessages.vue'
+import ChatWindowEvents from '@/components/ChatWindowEvents.vue'
 
 export default {
   name: 'ChatWindow',
@@ -22,36 +22,43 @@ export default {
   components: {
     ChatWindowHeader,
     ChatWindowFooter,
-    ChatWindowMessages
+    ChatWindowEvents
   },
   data () {
     return {
       user: {},
-      lastEventPage: {},
       events: [],
     }
   },
   mounted () {
     this.user = this.$props.app.me
+    this.registerListeners()
     this.getEventHistory()
   },
   methods: {
     getEventHistory () {
       this.$props.conversation
-        .getEvents({ page_size: 20, order: 'desc' })
+        .getEvents({ page_size: 20, order: 'asc' })
         .then((eventsPage) => {
-          this.lastEventPage = eventsPage;
-
           eventsPage.items.forEach(event => {
             this.events.push(event);
           });
-
-          console.log(this.events) // eslint-disable-line no-console
         })
         .catch((err) => {
           console.error(err) // eslint-disable-line no-console
-          // this.$parent.error = { title: 'Chat Service Error', message: err.reason }
+          // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
         })
+    },
+    registerListeners () {
+      const { conversation } = this.$props
+
+      conversation.on('text', (user, event) => {
+        this.events.push(event);
+      });
+
+      conversation.on("member:joined", (user, event) => {
+        this.events.push(event);
+      });
     }
   }
 }

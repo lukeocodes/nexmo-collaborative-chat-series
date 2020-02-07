@@ -41,7 +41,7 @@ export default {
         .then((response) => {
           const { token } = response.data
 
-          new NexmoClient({ debug: true })
+          new NexmoClient()
             .login(token)
             .then(app => {
               this.app = app
