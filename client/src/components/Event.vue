@@ -1,5 +1,5 @@
 <template>
-  <EventMessage v-if="event.type === 'message'" :event="event" :user="user" />
+  <EventMessage v-if="event.type === 'text'" :event="event" :user="user" :members="members" />
   <EventMemberJoined v-else-if="event.type === 'member:joined'" :event="event" :user="user" />
 </template>
 
@@ -15,8 +15,12 @@ export default {
   },
   props: {
     event: Object,
-    user: Object
-  }
+    user: Object,
+    members: Map
+  },
+  mounted () {
+    console.log('event')  // eslint-disable-line no-console
+  },
 }
 </script>
 

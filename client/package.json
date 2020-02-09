@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
+    "moment": "^2.24.0",
     "nexmo-client": "^6.0.7",
     "vue": "^2.6.10"
   },

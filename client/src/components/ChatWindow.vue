@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-white overflow-hidden">
+  <div class="flex flex-col min-h-screen max-h-screen bg-white overflow-hidden">
     <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
-    <ChatWindowEvents :events="events" :user="user" />
+    <ChatWindowEvents :events="events" :user="user" :members="members" />
     <ChatWindowFooter :conversation="conversation" />
   </div>
 </template>
@@ -26,28 +26,16 @@ export default {
     return {
       user: {},
       events: [],
+      members: new Map(),
     }
   },
-  mounted () {
+  beforeMount () {
     this.user = this.$props.app.me
-    this.registerListeners()
     this.getEventHistory()
+    this.registerListeners()
+    this.getMembers()
   },
   methods: {
-    getEventHistory () {
-      this.$props.conversation
-        .getEvents({ page_size: 20, order: 'asc' })
-        .then((eventsPage) => {
-          eventsPage.items.forEach(event => {
-            console.log(event) // eslint-disable-line no-console
-            this.events.push(event)
-          })
-        })
-        .catch((err) => {
-          console.error(err) // eslint-disable-line no-console
-          // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
-        })
-    },
     registerListeners () {
       const { conversation } = this.$props
 
@@ -58,6 +46,22 @@ export default {
       conversation.on("member:joined", (user, event) => {
         this.events.push(event)
       })
+    },
+    getEventHistory () {
+      this.$props.conversation
+        .getEvents({ page_size: 20, order: 'desc' })
+        .then((eventsPage) => {
+          eventsPage.items.forEach(event => {
+            this.events.unshift(event)
+          })
+        })
+        .catch((err) => {
+          console.error(err) // eslint-disable-line no-console
+          // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
+        })
+    },
+    getMembers () {
+      this.members = this.$props.conversation.members
     }
   }
 }
