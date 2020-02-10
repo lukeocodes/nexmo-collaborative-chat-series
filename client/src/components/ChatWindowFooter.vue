@@ -30,7 +30,7 @@ export default {
       height: 38  // default height for the message box
     }
   },
-  methods: { // todo: do i need a separate method to set the value on the component?
+  methods: {
     resize (event) {
       this.height = event.target.scrollHeight
     },

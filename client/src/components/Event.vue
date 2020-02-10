@@ -18,9 +18,6 @@ export default {
     user: Object,
     members: Map
   },
-  mounted () {
-    console.log('event')  // eslint-disable-line no-console
-  },
 }
 </script>
 
