@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col min-h-screen max-h-screen bg-white overflow-hidden">
     <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
-    <ChatWindowEvents :conversation="conversation" :user="user" :members="members" />
-    <ChatWindowFooter :conversation="conversation" />
+    <ChatWindowEvents :conversation="conversation" :user="user" :members="members" :inputRows="inputRows" :inputMessage="inputMessage" />
+    <ChatWindowFooter :conversation="conversation" @inputRows="updateInputRows($event)" @sendText="textSent($event)" />
   </div>
 </template>
 
@@ -26,6 +26,8 @@ export default {
     return {
       user: {},
       members: new Map(),
+      inputRows: 1,
+      inputMessage: null
     }
   },
   mounted () {
@@ -33,6 +35,12 @@ export default {
     this.getMembers()
   },
   methods: {
+    textSent (inputMessage) {
+      this.inputMessage = inputMessage
+    },
+    updateInputRows (inputRows) {
+      this.inputRows = inputRows
+    },
     getMembers () {
       this.members = this.$props.conversation.members
     }

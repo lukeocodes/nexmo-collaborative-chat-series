@@ -9,9 +9,9 @@
       v-on:keyup.backspace.exact="resize"
       type="text"
       :placeholder="'Message #' + conversation.display_name"
-      class="w-full rounded-lg border-2 border-grey overflow-hidden py-2 px-4"
+      class="w-full rounded-lg border-2 border-grey overflow-hidden py-2 px-4 resize-none"
       rows="1"
-      v-bind:style="styles"
+      ref="inputBox"
     >
     </textarea>
   </div>
@@ -31,28 +31,26 @@ export default {
     }
   },
   methods: {
-    resize (event) {
-      this.height = event.target.scrollHeight
+    resize () {
+      const inputRows = this.inputMessage.split(/\r?\n/).length
+      this.$refs.inputBox.rows = inputRows
+      this.$emit('inputRows', inputRows)
     },
     message () {
-      if (this.inputMessage.length > 0) {
+      // console.log() // eslint-disable-line no-console
+      if (this.inputMessage.replace(/\s/g,'').length > 0) {
         this.$props.conversation
-          .sendText(this.inputMessage)
+          .sendText(this.inputMessage.trim())
           .then(() => {
-            this.height = this.initialHeight; 
+            this.$emit('sendText', this.inputMessage)
+            this.height = this.initialHeight;
             this.inputMessage = ''
+            this.resize()
           })
           .catch(err => {
             console.error(err) // eslint-disable-line no-console
             // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
           })
-      }
-    }
-  },
-  computed: {
-    styles () {
-      return {
-        height: `${this.height}px`
       }
     }
   }

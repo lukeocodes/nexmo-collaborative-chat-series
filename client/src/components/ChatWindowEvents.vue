@@ -1,5 +1,5 @@
 <template>
-  <div class="px-6 py-4 flex-auto overflow-y-auto" ref="chatWindow">
+  <div class="px-6 py-4 flex-auto overflow-y-auto" ref="chatWindow" v-on:scroll="onScroll">
     <template v-if="!!events.length">
       <Event v-for="event in events" v-bind:key="event.id" :event="event" :user="user" :members="members" />
     </template>
@@ -17,7 +17,9 @@ export default {
   props: {
     user: Object,
     conversation: Object,
-    members: Map
+    members: Map,
+    inputRows: Number,
+    inputMessage: String
   },
   data () {
     return {
@@ -30,14 +32,32 @@ export default {
     this.registerListeners()
   },
   beforeUpdate() {
-    this.wasBottom  = this.viewBottom() === this.chatBottom()
+    this.storeWasBottom()
   },
   updated () {
-    if (this.wasBottom) {
-      this.scrollTo(this.chatBottom())
+    this.scrollToBottom()
+  },
+  watch: {
+    inputRows () {
+      this.storeWasBottom()
+      this.scrollToBottom()
+    },
+    inputMessage () {
+      this.scrollToBottom(true)
     }
   },
   methods: {
+    storeWasBottom () {
+      this.wasBottom = this.viewBottom() === this.chatBottom()
+    },
+    scrollToBottom (force) {
+      if (this.wasBottom || !!force) {
+        this.scrollTo(this.chatBottom())
+      }
+    },
+    onScroll() {
+      this.storeWasBottom()
+    },
     viewBottom () {
       return this.$refs.chatWindow.offsetHeight+this.$refs.chatWindow.scrollTop
     },
