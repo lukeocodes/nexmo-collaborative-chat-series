@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-h-screen max-h-screen bg-white overflow-hidden">
-    <ChatWindowHeader :channelName="'#' + conversation.display_name"/>
+    <ChatWindowHeader :channelName="'#' + conversation.display_name" :members="members.size"/>
     <ChatWindowEvents :conversation="conversation" :user="user" :members="members" :inputRows="inputRows" :inputMessage="inputMessage" />
     <ChatWindowFooter :conversation="conversation" @inputRows="updateInputRows($event)" @sendText="textSent($event)" />
   </div>

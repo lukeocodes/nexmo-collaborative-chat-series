@@ -1,18 +1,28 @@
 <template>
   <div class="px-6 py-4 flex-auto overflow-y-auto" ref="chatWindow" v-on:scroll="onScroll">
+    <template v-if="!!this.lastEventsPage && this.lastEventsPage.hasNext()">
+      <DummyEvent v-for="(n, index) in 10" v-bind:key="'dummy' + index" />
+    </template>
+    <template v-if="!!this.lastEventsPage && !this.lastEventsPage.hasNext()">
+      <h1 class="text-3xl mt-2 mb-3">#{{ conversation.display_name }}</h1>
+      <p class="text-l mb-8">This is the very beginning of the {{ conversation.display_name }} channel.</p>
+      <hr class="border-b mb-8"/>
+    </template>
     <template v-if="!!events.length">
-      <Event v-for="event in events" v-bind:key="event.id" :event="event" :user="user" :members="members" />
+      <Event v-for="event in events" v-bind:key="'message' + event.id" :event="event" :user="user" :members="members" />
     </template>
   </div>
 </template>
 
 <script>
+import DummyEvent from '@/components/DummyEvent.vue'
 import Event from '@/components/Event.vue'
 
 export default {
   name: 'ChatWindowEvents',
   components: {
-    Event
+    Event,
+    DummyEvent
   },
   props: {
     user: Object,
@@ -24,22 +34,25 @@ export default {
   data () {
     return {
       events: [],
-      chatPosition: 0,
+      wasTop: false,
+      wasBottom: false,
+      loadingMore: false,
+      lastEventsPage: null
     }
   },
   mounted () {
     this.getEventHistory()
     this.registerListeners()
   },
-  beforeUpdate() {
-    this.storeWasBottom()
+  beforeUpdate () {
+    this.storeWhenBottom()
   },
   updated () {
     this.scrollToBottom()
   },
   watch: {
     inputRows () {
-      this.storeWasBottom()
+      this.storeWhenBottom()
       this.scrollToBottom()
     },
     inputMessage () {
@@ -47,25 +60,62 @@ export default {
     }
   },
   methods: {
-    storeWasBottom () {
-      this.wasBottom = this.viewBottom() === this.chatBottom()
-    },
-    scrollToBottom (force) {
-      if (this.wasBottom || !!force) {
-        this.scrollTo(this.chatBottom())
+    onScroll() {
+      this.storeWhenTop()
+      this.storeWhenBottom()
+
+      if (this.wasTop && !this.loadingMore) {
+        this.loadingMore = true
+
+        if (!!this.lastEventsPage && this.lastEventsPage.hasNext()) {
+          const scrollHeightBefore = this.chatBottom()
+
+          this.lastEventsPage
+            .getNext()
+            .then(eventsPage => {
+              this.lastEventsPage = eventsPage
+
+              eventsPage.items.forEach(event => {
+                this.events.unshift(event)
+              })
+            })
+            .catch(err => {
+              console.error(err) // eslint-disable-line no-console
+              // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
+            })
+            .finally(() => {
+              const scrollHeightDiff = this.chatBottom()-scrollHeightBefore // eslint-disable-line no-console
+              this.scrollTo(this.viewTop()+scrollHeightDiff)
+              this.loadingMore = false
+            })
+        }
       }
     },
-    onScroll() {
-      this.storeWasBottom()
+    storeWhenTop () {
+      this.wasTop = this.viewTop() < this.chatTop()
+    },
+    storeWhenBottom () {
+      this.wasBottom = this.viewBottom() === this.chatBottom()
+    },
+    viewTop () {
+      return this.$refs.chatWindow.scrollTop
     },
     viewBottom () {
       return this.$refs.chatWindow.offsetHeight+this.$refs.chatWindow.scrollTop
+    },
+    chatTop () {
+      return 700
     },
     chatBottom () {
       return this.$refs.chatWindow.scrollHeight
     },
     scrollTo(position) {
       this.$refs.chatWindow.scrollTop = position
+    },
+    scrollToBottom (force) {
+      if (this.wasBottom || !!force) {
+        this.scrollTo(this.chatBottom())
+      }
     },
     registerListeners () {
       const { conversation } = this.$props
@@ -81,7 +131,9 @@ export default {
     getEventHistory () {
       this.$props.conversation
         .getEvents({ page_size: 20, order: 'desc' })
-        .then((eventsPage) => {
+        .then(eventsPage => {
+          this.lastEventsPage = eventsPage
+
           eventsPage.items.forEach(event => {
             this.events.unshift(event)
           })
