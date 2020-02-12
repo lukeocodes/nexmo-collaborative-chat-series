@@ -1,12 +1,10 @@
 <template>
   <div class="px-6 py-4 flex-auto overflow-y-auto" ref="chatWindow" v-on:scroll="onScroll">
     <template v-if="!!this.lastEventsPage && this.lastEventsPage.hasNext()">
-      <DummyEvent v-for="(n, index) in 10" v-bind:key="'dummy' + index" />
+      <EventDummy v-for="(n, index) in 10" v-bind:key="'dummy' + index" />
     </template>
     <template v-if="!!this.lastEventsPage && !this.lastEventsPage.hasNext()">
-      <h1 class="text-3xl mt-2 mb-3">#{{ conversation.display_name }}</h1>
-      <p class="text-l mb-8">This is the very beginning of the {{ conversation.display_name }} channel.</p>
-      <hr class="border-b mb-8"/>
+      <EventBeginning :conversation="conversation" />
     </template>
     <EventError v-if="!!error" :error="error" />
     <template v-if="!!events.length">
@@ -17,18 +15,20 @@
 </template>
 
 <script>
-import DummyEvent from '@/components/DummyEvent.vue'
-import Event from '@/components/Event.vue'
 import Loading from '@/components/Loading.vue'
+import Event from '@/components/Event.vue'
+import EventBeginning from '@/components/EventBeginning.vue'
+import EventDummy from '@/components/EventDummy.vue'
 import EventError from '@/components/EventError.vue'
 
 export default {
   name: 'ChatWindowEvents',
   components: {
+    Loading,
     Event,
-    DummyEvent,
-    EventError,
-    Loading
+    EventBeginning,
+    EventDummy,
+    EventError
   },
   props: {
     user: Object,
