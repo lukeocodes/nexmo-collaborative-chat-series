@@ -1,24 +1,30 @@
 <template>
   <div id="app">
     <Nexmo v-if="!!server.status && server.status === 'ok'" :server="server" />
-    <Error v-else :error="{ title: 'Couldn\'t connect to server.', message: 'There may be a server connection problem. Keep trying, it might work!' }" />
+    <template v-else>
+      <Loading v-if="!error" message="Connecting..." />
+      <Error v-else :error="error" />
+      </template>
   </div>
 </template>
 
 <script>
 import Nexmo from '@/components/Nexmo.vue'
 import Error from '@/components/Error.vue'
+import Loading from '@/components/Loading.vue'
 import ServerService from '@/services/Server'
 
 export default {
   name: 'App',
   components: {
     Nexmo,
-    Error
+    Error,
+    Loading
   },
   data () {
     return {
-      server: {}
+      server: {},
+      error: null
     }
   },
   mounted () {
@@ -26,8 +32,13 @@ export default {
   },
   methods: {
     async getServerStatus () {
-      const response = await ServerService.fetchStatus()
-      this.server = response.data
+      ServerService.fetchStatus()
+        .then((response) => {
+          this.server = response.data
+        })
+        .catch((err) => {
+          this.error = { title: 'Chat Service Error', message: err.reason }
+        })
     }
   }
 }
