@@ -8,21 +8,27 @@
       <p class="text-l mb-8">This is the very beginning of the {{ conversation.display_name }} channel.</p>
       <hr class="border-b mb-8"/>
     </template>
+    <EventError v-if="!!error" :error="error" />
     <template v-if="!!events.length">
       <Event v-for="event in events" v-bind:key="'message' + event.id" :event="event" :user="user" :members="members" />
     </template>
+    <Loading v-else message="Loading messages..." />
   </div>
 </template>
 
 <script>
 import DummyEvent from '@/components/DummyEvent.vue'
 import Event from '@/components/Event.vue'
+import Loading from '@/components/Loading.vue'
+import EventError from '@/components/EventError.vue'
 
 export default {
   name: 'ChatWindowEvents',
   components: {
     Event,
-    DummyEvent
+    DummyEvent,
+    EventError,
+    Loading
   },
   props: {
     user: Object,
@@ -37,7 +43,8 @@ export default {
       wasTop: false,
       wasBottom: false,
       loadingMore: false,
-      lastEventsPage: null
+      lastEventsPage: null,
+      error: null
     }
   },
   mounted () {
@@ -80,8 +87,7 @@ export default {
               })
             })
             .catch(err => {
-              console.error(err) // eslint-disable-line no-console
-              // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
+              this.error = { title: 'Chat Service Error', message: err.message }
             })
             .finally(() => {
               const scrollHeightDiff = this.chatBottom()-scrollHeightBefore // eslint-disable-line no-console
@@ -139,8 +145,7 @@ export default {
           })
         })
         .catch(err => {
-          console.error(err) // eslint-disable-line no-console
-          // this.$parent.error = { title: 'Chat Service Error', message: err.reason } // todo: determine if this is good practice to pass the error up the component tree
+          this.error = { title: 'Chat Service Error', message: err.message }
         })
         .finally(() => {
           this.scrollTo(this.chatBottom())
