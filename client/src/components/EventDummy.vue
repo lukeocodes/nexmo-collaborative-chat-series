@@ -2,10 +2,10 @@
   <div class="flex items-start mb-4 text-sm">
     <div class="flex-1 overflow-hidden">
       <div>
-        <span class="text-grey font-bold">⎯ ⏤⎯ ⏤ ⎯ ⏤ ⎯ ⏤⎯ ⏤</span>
-        <span class="text-grey text-xs pl-2">⏤ ⎯ ⏤ ⎯ ⏤⎯</span>
+        <span class="text-gray-400 font-bold">⎯ ⏤⎯ ⏤ ⎯ ⏤ ⎯ ⏤⎯ ⏤</span>
+        <span class="text-gray-400 text-xs pl-2">⏤ ⎯ ⏤ ⎯ ⏤⎯</span>
       </div>
-      <p class="text-grey leading-normal whitespace-pre-line">⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯ ⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯<br />
+      <p class="text-gray-400 leading-normal whitespace-pre-line">⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯ ⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯<br />
           ⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯ ⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯ ⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯ ⎯ ⏤⎯⏤ ⎯⏤ ⏤⎯ </p>
     </div>
   </div>
