@@ -1,6 +1,13 @@
 <template>
   <div class="px-4">
     <textarea
+      v-bind:class="{ 
+        'disabled:opacity-75': isSending,
+        'bg-gray-300': isSending,
+        'border-gray-400': !isSending,
+        'border-gray-400': isSending
+      }"
+      v-bind:disabled="isSending"
       v-bind:value="inputMessage"
       v-on:input="inputMessage = $event.target.value"
       v-on:keydown.enter.exact.prevent
@@ -10,7 +17,7 @@
       v-on:keydown="typing"
       type="text"
       :placeholder="'Message #' + conversation.display_name"
-      class="w-full rounded-lg border-2 border-gray-400 overflow-hidden py-2 px-4 resize-none"
+      class="w-full rounded-lg border-2 overflow-hidden py-2 px-4 resize-none"
       rows="1"
       ref="inputBox"
     >
@@ -47,7 +54,8 @@ export default {
       height: 38,  // default height for the message box
       isTyping: null,
       membersTyping: {},
-      numbersTyping: 0
+      numbersTyping: 0,
+      isSending: false
     }
   },
   mounted () {
@@ -92,13 +100,21 @@ export default {
     },
     sendMessage () {
       if (this.inputMessage.replace(/\s/g,'').length > 0) {
+        this.isSending = true
+
         this.$props.conversation
           .sendText(this.inputMessage.trim())
           .then(() => {
+            this.isSending = false
+            this.$nextTick(() => {
+              this.$refs.inputBox.focus()
+            });
+
             this.$emit('sendText', this.inputMessage)
-            this.height = this.initialHeight;
-            this.inputMessage = ''
             this.resize()
+
+            this.height = this.initialHeight
+            this.inputMessage = ''
           })
           .catch(err => {
             console.error(err) // eslint-disable-line no-console

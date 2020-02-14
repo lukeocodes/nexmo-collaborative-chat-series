@@ -45,4 +45,40 @@ export default {
 </script>
 
 <style>
+.text-event pre, .text-event p code {
+  background: #f8f8f8;
+  border-radius: .2rem;
+  border: 1px solid #ddd;
+  font-family: Monaco,Menlo,Consolas,'Courier New',monospace;
+  font-size: 0.9em;
+  font-variant-ligatures: none;
+  padding: .1rem .4rem;
+  -webkit-font-variant-ligatures: none;
+}
+.text-event p code {
+  background: rgba(232, 145, 45, 0.05);
+  color: rgb(232, 145, 45);
+}
+.text-event pre {
+  tab-size: 2;
+  -moz-tab-size: 2;
+  -o-tab-size: 2;
+  -webkit-tab-size: 2;
+}
+.text-event blockquote {
+  border-left: 5px solid #ccc;
+  padding: 0.5em;
+}
+.text-event blockquote {
+  display: inline-flex;
+}
+.text-event p {
+  display: inline;
+}
+.text-event pre {
+  display: inline-block;
+}
+.text-event ul {
+  display: inline-grid;
+}
 </style>

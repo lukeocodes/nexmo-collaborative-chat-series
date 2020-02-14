@@ -1,10 +1,21 @@
 import Vue from 'vue'
 import App from './App.vue'
-import moment from 'moment'
+import Moment from 'moment'
+import Markdown from 'markdown-it'
+import MarkdownSlack from 'slack-markdown-it'
 
 Vue.filter('messageDate', value => {
   if (value) {
-    return moment(String(value)).calendar(new Date())
+    return Moment(String(value)).calendar(new Date())
+  }
+})
+
+Vue.filter('markdown', value => {
+  if (value) {
+    const md = Markdown();
+    md.use(MarkdownSlack);
+
+    return md.render(value);
   }
 })
 
