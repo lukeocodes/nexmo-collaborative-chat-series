@@ -1,9 +1,9 @@
 <template>
   <div class="px-6 py-4 flex-auto overflow-y-auto" ref="chatWindow" v-on:scroll="onScroll">
-    <template v-if="!!this.lastEventsPage && this.lastEventsPage.hasNext()">
+    <template v-if="!!lastEventsPage && lastEventsPage.hasNext()">
       <EventDummy v-for="(n, index) in 10" v-bind:key="'dummy' + index" />
     </template>
-    <template v-if="!!this.lastEventsPage && !this.lastEventsPage.hasNext()">
+    <template v-if="!!lastEventsPage && !lastEventsPage.hasNext()">
       <EventBeginning :conversation="conversation" />
     </template>
     <EventError v-if="!!error" :error="error" />
@@ -11,6 +11,7 @@
       <Event v-for="event in events" v-bind:key="'message' + event.id" :event="event" :user="user" :members="members" />
     </template>
     <Loading v-else message="Loading messages..." />
+    <EventNotice :latestEvent="latestEvent" :unseenEvents="unseenEvents" :lastEvent="events[events.length - 1]" v-if="this.unseenEvents > 0"/>
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import Event from '@/components/Event.vue'
 import EventBeginning from '@/components/EventBeginning.vue'
 import EventDummy from '@/components/EventDummy.vue'
 import EventError from '@/components/EventError.vue'
+import EventNotice from '@/components/EventNotice.vue'
 
 export default {
   name: 'ChatWindowEvents',
@@ -28,7 +30,8 @@ export default {
     Event,
     EventBeginning,
     EventDummy,
-    EventError
+    EventError,
+    EventNotice
   },
   props: {
     user: Object,
@@ -44,7 +47,9 @@ export default {
       wasBottom: false,
       loadingMore: false,
       lastEventsPage: null,
-      error: null
+      error: null,
+      latestEvent: null,
+      unseenEvents: 0
     }
   },
   mounted () {
@@ -71,6 +76,10 @@ export default {
       this.storeWhenTop()
       this.storeWhenBottom()
 
+      if (this.isTop()) this.atTop()
+      if (this.isBottom()) this.atBottom()
+    },
+    atTop() {
       if (this.wasTop && !this.loadingMore) {
         this.loadingMore = true
 
@@ -90,18 +99,27 @@ export default {
               this.error = { title: 'Chat Service Error', message: err.message }
             })
             .finally(() => {
-              const scrollHeightDiff = this.chatBottom()-scrollHeightBefore // eslint-disable-line no-console
+              const scrollHeightDiff = this.chatBottom()-scrollHeightBefore
               this.scrollTo(this.viewTop()+scrollHeightDiff)
               this.loadingMore = false
             })
         }
       }
     },
+    atBottom () {
+      this.unseenEvents = 0
+    },
     storeWhenTop () {
-      this.wasTop = this.viewTop() < this.chatTop()
+      this.wasTop = this.isTop()
     },
     storeWhenBottom () {
-      this.wasBottom = this.viewBottom() === this.chatBottom()
+      this.wasBottom = this.isBottom()
+    },
+    isTop () {
+      return this.viewTop() < this.chatTop()
+    },
+    isBottom () {
+      return this.viewBottom() === this.chatBottom()
     },
     viewTop () {
       return this.$refs.chatWindow.scrollTop
@@ -127,7 +145,15 @@ export default {
       const { conversation } = this.$props
 
       conversation.on('text', (user, event) => {
+        if (this.isBottom()) {
+          this.latestEvent = event
+        }
+
         this.events.push(event)
+
+        if (event !== this.latestEvent) {
+          this.unseenEvents++
+        }
       })
 
       conversation.on("member:joined", (user, event) => {
