@@ -1,10 +1,10 @@
 <template>
-  <div class="fixed top-0 left-0 right-0 mt-20 text-white text-xs flex mx-6 text-center">
-    <div class="w-full flex font-bold bg-blue-600 hover:bg-blue-700 rounded-l-lg  cursor-pointer" v-on:click="$parent.scrollToBottom(true)">
+  <div class="fixed top-0 left-0 right-0 flex mx-6 mt-20 text-xs text-center text-white">
+    <div class="flex w-full font-bold bg-blue-600 rounded-l-lg cursor-pointer hover:bg-blue-700" v-on:click="$parent.scrollToBottom(true)">
       <div class="w-32 py-1">￬ Jump</div>
-      <div class="w-full py-1">{{ unseenEvents }} new {{ message }} since {{ latestEvent.timestamp | messageDate }} </div>
+      <div class="w-full py-1">{{ unreadMessages }} new {{ message }} since {{ lastEvent.timestamp | messageDate }} </div>
     </div>
-    <div class="w-32 bg-blue-600 hover:bg-blue-700 border-l border-blue-700 py-1 rounded-r-lg cursor-pointer" v-on:click="markAsRead">
+    <div class="w-32 py-1 bg-blue-600 border-l border-blue-700 rounded-r-lg cursor-pointer hover:bg-blue-700" v-on:click="markAsRead">
       Mark as read <span class="font-bold">x</span>
     </div>
   </div>
@@ -14,19 +14,19 @@
 export default {
   name: 'EventNotice',
   props: {
-    latestEvent: Object,
-    unseenEvents: Number,
-    lastEvent: Object
+    lastEvent: Object,
+    unreadMessages: Number,
+    lastUnreadEvent: Object
   },
   methods: {
     markAsRead () {
-      this.$parent.latestEvent = this.lastEvent
-      this.$parent.unseenEvents = 0
+      this.$parent.setLastEvent(this.lastUnreadEvent)
+      this.$parent.markAllRead()
     }
   },
   computed: {
     message () {
-      return this.unseenEvents > 1 ? 'messages' : 'message'
+      return this.unreadMessages > 1 ? 'messages' : 'message'
     }
   }
 }

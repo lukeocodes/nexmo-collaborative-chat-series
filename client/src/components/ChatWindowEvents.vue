@@ -11,7 +11,7 @@
       <Event v-for="event in events" v-bind:key="'message' + event.id" :event="event" :user="user" :members="members" />
     </template>
     <Loading v-else message="Loading messages..." />
-    <EventNotice :latestEvent="latestEvent" :unseenEvents="unseenEvents" :lastEvent="events[events.length - 1]" v-if="this.unseenEvents > 0"/>
+    <EventNotice :lastEvent="lastEvent" :unreadMessages="unreadMessages" :lastUnreadEvent="events[events.length - 1]" v-if="unreadMessages > 0 && !!lastEvent"/>
   </div>
 </template>
 
@@ -46,10 +46,10 @@ export default {
       wasTop: false,
       wasBottom: false,
       loadingMore: false,
+      lastEvent: null,
       lastEventsPage: null,
       error: null,
-      latestEvent: null,
-      unseenEvents: 0
+      unreadMessages: 0
     }
   },
   mounted () {
@@ -57,14 +57,13 @@ export default {
     this.registerListeners()
   },
   beforeUpdate () {
-    this.storeWhenBottom()
+    this.setWasBottom()
   },
   updated () {
     this.scrollToBottom()
   },
   watch: {
     inputRows () {
-      this.storeWhenBottom()
       this.scrollToBottom()
     },
     inputMessage () {
@@ -73,46 +72,21 @@ export default {
   },
   methods: {
     onScroll() {
-      this.storeWhenTop()
-      this.storeWhenBottom()
-
       if (this.isTop()) this.atTop()
       if (this.isBottom()) this.atBottom()
     },
     atTop() {
-      if (this.wasTop && !this.loadingMore) {
-        this.loadingMore = true
-
-        if (!!this.lastEventsPage && this.lastEventsPage.hasNext()) {
-          const scrollHeightBefore = this.chatBottom()
-
-          this.lastEventsPage
-            .getNext()
-            .then(eventsPage => {
-              this.lastEventsPage = eventsPage
-
-              eventsPage.items.forEach(event => {
-                this.events.unshift(event)
-              })
-            })
-            .catch(err => {
-              this.error = { title: 'Chat Service Error', message: err.message }
-            })
-            .finally(() => {
-              const scrollHeightDiff = this.chatBottom()-scrollHeightBefore
-              this.scrollTo(this.viewTop()+scrollHeightDiff)
-              this.loadingMore = false
-            })
-        }
-      }
+      this.setWasStop()
+      this.getNextEventsPage()
     },
     atBottom () {
-      this.unseenEvents = 0
+      this.setWasBottom()
+      this.markAllRead()
     },
-    storeWhenTop () {
+    setWasStop () {
       this.wasTop = this.isTop()
     },
-    storeWhenBottom () {
+    setWasBottom () {
       this.wasBottom = this.isBottom()
     },
     isTop () {
@@ -133,7 +107,13 @@ export default {
     chatBottom () {
       return this.$refs.chatWindow.scrollHeight
     },
-    scrollTo(position) {
+    markAllRead () {
+      this.unreadMessages = 0
+    },
+    addUnreadMessage () {
+      this.unreadMessages++
+    },
+    scrollTo (position) {
       this.$refs.chatWindow.scrollTop = position
     },
     scrollToBottom (force) {
@@ -141,18 +121,30 @@ export default {
         this.scrollTo(this.chatBottom())
       }
     },
+    setLastEvent (event) {
+      this.lastEvent = event
+    }, 
+    getLastEvent () {
+      return this.lastEvent
+    },
+    setLastEventsPage (eventsPage) {
+      this.lastEventsPage = eventsPage
+    },
+    getLastEventsPage () {
+      return this.lastEventsPage
+    },
     registerListeners () {
       const { conversation } = this.$props
 
       conversation.on('text', (user, event) => {
         if (this.isBottom()) {
-          this.latestEvent = event
+          this.setLastEvent(event)
         }
 
         this.events.push(event)
 
-        if (event !== this.latestEvent) {
-          this.unseenEvents++
+        if (event !== this.getLastEvent()) {
+          this.addUnreadMessage()
         }
       })
 
@@ -160,13 +152,48 @@ export default {
         this.events.push(event)
       })
     },
+    setLoadingMore (loadingMore) {
+      this.loadingMore = loadingMore
+    },
+    getLoadingMore () {
+      return this.loadingMore
+    },
+    getNextEventsPage () {
+      if (!this.getLoadingMore()) {
+        this.setLoadingMore(true)
+
+        if (!!this.getLastEventsPage() && this.getLastEventsPage().hasNext()) {
+          const scrollHeightBefore = this.chatBottom()
+
+          this.getLastEventsPage().getNext()
+            .then(eventsPage => {
+              this.setLastEventsPage(eventsPage)
+
+              eventsPage.items.forEach(event => {
+                this.events.unshift(event)
+              })
+            })
+            .catch(err => {
+              this.error = { title: 'Chat Service Error', message: err.message }
+            })
+            .finally(() => {
+              this.scrollTo(this.viewTop()+(this.chatBottom()-scrollHeightBefore))
+              this.setLoadingMore(false)
+            })
+        }
+      }
+    },
     getEventHistory () {
       this.$props.conversation
         .getEvents({ page_size: 20, order: 'desc' })
         .then(eventsPage => {
-          this.lastEventsPage = eventsPage
+          this.setLastEventsPage(eventsPage)
 
           eventsPage.items.forEach(event => {
+            if (!this.getLastEvent()) {
+              this.setLastEvent(event)
+            }
+
             this.events.unshift(event)
           })
         })

@@ -4,8 +4,8 @@
       v-bind:class="{ 
         'disabled:opacity-75': isSending,
         'bg-gray-300': isSending,
-        'border-gray-400': !isSending,
-        'border-gray-400': isSending
+        'border-gray-400': isSending,
+        'border-gray-400': !isSending
       }"
       v-bind:disabled="isSending"
       v-bind:value="inputMessage"
@@ -50,8 +50,6 @@ export default {
   data () {
     return {
       inputMessage: '',
-      initialHeight: 38,  // default height for the message box
-      height: 38,  // default height for the message box
       isTyping: null,
       membersTyping: {},
       numbersTyping: 0,
@@ -108,12 +106,10 @@ export default {
             this.isSending = false
             this.$nextTick(() => {
               this.$refs.inputBox.focus()
+              this.resize()
             });
 
             this.$emit('sendText', this.inputMessage)
-            this.resize()
-
-            this.height = this.initialHeight
             this.inputMessage = ''
           })
           .catch(err => {

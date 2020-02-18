@@ -31,7 +31,7 @@ export default {
     this.getServerStatus()
   },
   methods: {
-    async getServerStatus () {
+    getServerStatus () {
       ServerService.fetchStatus()
         .then((response) => {
           this.server = response.data
