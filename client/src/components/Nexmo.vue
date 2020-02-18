@@ -33,10 +33,10 @@ export default {
     }
   },
   mounted () {
-    this.login()
+    this.fetchSession()
   },
   methods: {
-    login () {
+    fetchSession () {
       UserService.fetchSession()
         .then((response) => {
           const { token } = response.data
@@ -45,6 +45,7 @@ export default {
             .login(token)
             .then(app => {
               this.app = app
+
               return app.getConversation(this.$props.server.defaultConversationId)
             })
             .then((conversation) => {

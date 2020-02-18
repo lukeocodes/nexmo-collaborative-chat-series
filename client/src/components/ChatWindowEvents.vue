@@ -53,6 +53,7 @@ export default {
     }
   },
   mounted () {
+    this.setWasBottom()
     this.getEventHistory()
     this.registerListeners()
   },
@@ -60,18 +61,25 @@ export default {
     this.setWasBottom()
   },
   updated () {
-    this.scrollToBottom()
+    if (this.wasBottom) {
+      this.scrollToBottom()
+    }
   },
   watch: {
     inputRows () {
-      this.scrollToBottom()
+      if (this.wasBottom) {
+        this.scrollToBottom()
+      }
     },
     inputMessage () {
-      this.scrollToBottom(true)
+      this.scrollToBottom()
     }
   },
   methods: {
     onScroll() {
+      this.setWasBottom()
+      this.setWasStop()
+
       if (this.isTop()) this.atTop()
       if (this.isBottom()) this.atBottom()
     },
@@ -116,10 +124,8 @@ export default {
     scrollTo (position) {
       this.$refs.chatWindow.scrollTop = position
     },
-    scrollToBottom (force) {
-      if (this.wasBottom || !!force) {
-        this.scrollTo(this.chatBottom())
-      }
+    scrollToBottom () {
+      this.scrollTo(this.chatBottom())
     },
     setLastEvent (event) {
       this.lastEvent = event

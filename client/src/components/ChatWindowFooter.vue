@@ -12,9 +12,9 @@
       v-on:input="inputMessage = $event.target.value"
       v-on:keydown.enter.exact.prevent
       v-on:keyup.enter.exact="sendMessage"
-      v-on:keyup.enter.shift="resize"
-      v-on:keyup.backspace.exact="resize"
-      v-on:keydown="typing"
+      v-on:keyup.enter.shift="resizeInput"
+      v-on:keyup.backspace.exact="resizeInput"
+      v-on:keydown="typingEvent"
       type="text"
       :placeholder="'Message #' + conversation.display_name"
       class="w-full rounded-lg border-2 overflow-hidden py-2 px-4 resize-none"
@@ -50,9 +50,9 @@ export default {
   data () {
     return {
       inputMessage: '',
-      isTyping: null,
       membersTyping: {},
       numbersTyping: 0,
+      isTyping: null,
       isSending: false
     }
   },
@@ -73,13 +73,13 @@ export default {
         this.numbersTyping = Object.keys(this.membersTyping).length
       })
     },
-    typing (event) {
-      if (![1,2,3].includes(event.location) 
-          && !event.ctrlKey
-          && !event.altKey
-          && !event.metaKey
-          && event.key !== "Backspace"
-        ) {
+    isTypingKeyCheck (event) {
+      const { location, ctrlKey, altKey, metaKey, key } = event
+
+      return ![1,2,3].includes(location) && !ctrlKey && !altKey && !metaKey && key !== "Backspace"
+    },
+    typingEvent (event) {
+      if (this.isTypingKeyCheck(event)) {
         if (!this.isTyping) {
           this.$props.conversation.startTyping()
         }
@@ -91,10 +91,10 @@ export default {
         }, 3000)
       }
     },
-    resize () {
+    resizeInput () {
       const inputRows = this.inputMessage.split(/\r?\n/).length
       this.$refs.inputBox.rows = inputRows
-      this.$emit('inputRows', inputRows)
+      this.$emit('resizeInput', inputRows)
     },
     sendMessage () {
       if (this.inputMessage.replace(/\s/g,'').length > 0) {

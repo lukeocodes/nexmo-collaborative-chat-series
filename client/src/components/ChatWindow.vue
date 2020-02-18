@@ -2,7 +2,7 @@
   <div class="flex flex-col min-h-screen max-h-screen bg-white overflow-hidden">
     <ChatWindowHeader :channelName="'#' + conversation.display_name" :members="members.size"/>
     <ChatWindowEvents :conversation="conversation" :user="user" :members="members" :inputRows="inputRows" :inputMessage="inputMessage" />
-    <ChatWindowFooter :conversation="conversation" @inputRows="updateInputRows($event)" @sendText="textSent($event)" />
+    <ChatWindowFooter :conversation="conversation" v-on:resizeInput="resizeInput($event)" v-on:sendText="textSent($event)" />
   </div>
 </template>
 
@@ -32,16 +32,16 @@ export default {
   },
   mounted () {
     this.user = this.$props.app.me
-    this.getMembers()
+    this.fetchMembers()
   },
   methods: {
     textSent (inputMessage) {
       this.inputMessage = inputMessage
     },
-    updateInputRows (inputRows) {
+    resizeInput (inputRows) {
       this.inputRows = inputRows
     },
-    getMembers () {
+    fetchMembers () {
       this.members = this.$props.conversation.members
     }
   }
