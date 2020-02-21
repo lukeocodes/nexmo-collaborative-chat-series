@@ -12,9 +12,7 @@
       v-on:input="inputMessage = $event.target.value"
       v-on:keydown.enter.exact.prevent
       v-on:keyup.enter.exact="sendMessage"
-      v-on:keyup.enter.shift="resizeInput"
-      v-on:keyup.backspace.exact="resizeInput"
-      v-on:keydown="typingEvent"
+      v-on:keyup="typingEvents"
       type="text"
       :placeholder="'Message #' + conversation.display_name"
       class="w-full rounded-lg border-2 overflow-hidden py-2 px-4 resize-none"
@@ -78,7 +76,7 @@ export default {
 
       return ![1,2,3].includes(location) && !ctrlKey && !altKey && !metaKey && key !== "Backspace"
     },
-    typingEvent (event) {
+    sendTypingEvents () {
       if (this.isTypingKeyCheck(event)) {
         if (!this.isTyping) {
           this.$props.conversation.startTyping()
@@ -91,6 +89,10 @@ export default {
         }, 3000)
       }
     },
+    typingEvents (event) {
+      this.resizeInput()
+      this.sendTypingEvents(event)
+    },
     resizeInput () {
       const inputRows = this.inputMessage.split(/\r?\n/).length
       this.$refs.inputBox.rows = inputRows
@@ -99,6 +101,7 @@ export default {
     sendMessage () {
       if (this.inputMessage.replace(/\s/g,'').length > 0) {
         this.isSending = true
+        this.$emit('sendText', this.inputMessage)
 
         this.$props.conversation
           .sendText(this.inputMessage.trim())
@@ -106,11 +109,10 @@ export default {
             this.isSending = false
             this.$nextTick(() => {
               this.$refs.inputBox.focus()
-              this.resize()
+              this.$emit('sendText', '')
+              this.inputMessage = ''
+              this.resizeInput()
             });
-
-            this.$emit('sendText', this.inputMessage)
-            this.inputMessage = ''
           })
           .catch(err => {
             console.error(err) // eslint-disable-line no-console

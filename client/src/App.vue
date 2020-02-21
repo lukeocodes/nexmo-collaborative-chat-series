@@ -77,6 +77,7 @@ export default {
 }
 .text-event pre {
   display: inline-block;
+  width: 100%;
 }
 .text-event ul {
   display: inline-grid;

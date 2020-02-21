@@ -8,7 +8,7 @@
     </template>
     <EventError v-if="!!error" :error="error" />
     <template v-if="!!events.length">
-      <Event v-for="event in events" v-bind:key="'message' + event.id" :event="event" :user="user" :members="members" />
+      <Event v-for="event in events" v-bind:key="'event' + event.id" :event="event" :user="user" :members="members" />
     </template>
     <Loading v-else message="Loading messages..." />
     <EventNotice :lastEvent="lastEvent" :unreadMessages="unreadMessages" :lastUnreadEvent="events[events.length - 1]" v-if="unreadMessages > 0 && !!lastEvent"/>
@@ -53,7 +53,6 @@ export default {
     }
   },
   mounted () {
-    this.setWasBottom()
     this.getEventHistory()
     this.registerListeners()
   },
@@ -158,6 +157,10 @@ export default {
         this.events.push(event)
       })
     },
+    deleteEvent (event) {
+      delete(this.events[Object.keys(this.events).find(key => this.events[key] === event)])
+      this.conversation.deleteEvent(event)
+    },
     setLoadingMore (loadingMore) {
       this.loadingMore = loadingMore
     },
@@ -191,7 +194,7 @@ export default {
     },
     getEventHistory () {
       this.$props.conversation
-        .getEvents({ page_size: 20, order: 'desc' })
+        .getEvents({ page_size: 40, order: 'desc' })
         .then(eventsPage => {
           this.setLastEventsPage(eventsPage)
 
@@ -207,7 +210,8 @@ export default {
           this.error = { title: 'Chat Service Error', message: err.message }
         })
         .finally(() => {
-          this.scrollTo(this.chatBottom())
+          this.setWasBottom()
+          this.scrollToBottom()
         })
     },
   },
