@@ -1,5 +1,5 @@
 <template>
-  <div class="px-6 py-4 flex-auto overflow-y-auto" ref="chatWindow" v-on:scroll="onScroll">
+  <div class="py-4 flex-auto overflow-y-auto" ref="chatWindow" v-on:scroll="onScroll">
     <template v-if="!!lastEventsPage && lastEventsPage.hasNext()">
       <EventDummy v-for="(n, index) in 10" v-bind:key="'dummy' + index" />
     </template>

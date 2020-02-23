@@ -14,8 +14,8 @@
       v-on:keyup.enter.exact="sendMessage"
       v-on:keyup="typingEvents"
       type="text"
-      :placeholder="'Message #' + conversation.display_name"
-      class="w-full rounded-lg border-2 overflow-hidden py-2 px-4 resize-none"
+      :placeholder="'Message ' + conversation.display_name"
+      class="w-full rounded border text-sm border-gray-700 overflow-hidden py-2 px-4 resize-none"
       rows="1"
       ref="inputBox"
     >
@@ -124,6 +124,8 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+textarea:focus{
+  outline: none;
+}
 </style>

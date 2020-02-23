@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-start mb-4 text-sm">
+  <div class="flex items-start mb-4 px-6 text-sm">
     <div class="flex-1 overflow-hidden">
       <div>
         <span class="text-gray-400 font-bold">⎯ ⏤⎯ ⏤ ⎯ ⏤ ⎯ ⏤⎯ ⏤</span>

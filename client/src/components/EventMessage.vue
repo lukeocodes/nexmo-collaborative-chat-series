@@ -2,11 +2,11 @@
   <div class="flex mb-3 text-sm">
     <!-- <img :src="message.image" class="w-10 h-10 mr-3 rounded"> -->
     <div class="flex-1 relative" v-on:mouseover="showMenu = true" v-on:mouseleave="showMenu = false; openExtraMenu = false">
-      <div class="float-right -mt-1" v-bind:class="{ block: showMenu, hidden: !showMenu }">
-        <div class="cursor-pointer relative px-2 py-1 border border-gray-300 rounded hover:bg-gray-400" v-on:click="openExtraMenu = !openExtraMenu">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"><path class="heroicon-ui" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z"/></svg>
+      <div class="float-right -mt-3 border rounded bg-white border-gray-400 text-gray-700" v-bind:class="{ block: showMenu, hidden: !showMenu }">
+        <div class="py-1 px-3 text-center cursor-pointer relative border-2 border-white text-gray-700 rounded hover:bg-gray-200" v-on:click="openExtraMenu = !openExtraMenu">
+          <font-awesome-icon :icon="['fas', 'ellipsis-v']" />
         </div>
-        <div class="absolute top-0 right-0 -mt-1 mr-10" v-bind:class="{ block: openExtraMenu, hidden: !openExtraMenu }">
+        <div class="absolute top-0 right-0 -mt-3 mr-10" v-bind:class="{ block: openExtraMenu, hidden: !openExtraMenu }">
           <div class="border rounded bg-white py-2">
             <div v-on:click="openExtraMenu = false; deleteEvent()" class="block w-48 py-1 px-4 text-red-700 hover:bg-red-700 hover:text-white cursor-pointer">Delete message</div>
           </div>
