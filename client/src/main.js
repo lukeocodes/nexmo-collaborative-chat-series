@@ -3,6 +3,15 @@ import App from './App.vue'
 import Moment from 'moment'
 import Markdown from 'markdown-it'
 import MarkdownSlack from 'slack-markdown-it'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
+
+library.add(fas, far)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('font-awesome-layers', FontAwesomeLayers)
 
 Vue.filter('messageDate', value => {
   if (value) {

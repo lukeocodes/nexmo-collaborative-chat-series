@@ -1,13 +1,11 @@
 <template>
-  <div class="flex h-screen">
-    <div class="m-auto text-center">
-      <span class="text-grey">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path class="heroicon-ui" d="M6 18.7V21a1 1 0 0 1-2 0v-5a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2H7.1A7 7 0 0 0 19 12a1 1 0 1 1 2 0 9 9 0 0 1-15 6.7zM18 5.3V3a1 1 0 0 1 2 0v5a1 1 0 0 1-1 1h-5a1 1 0 0 1 0-2h2.9A7 7 0 0 0 5 12a1 1 0 1 1-2 0 9 9 0 0 1 15-6.7z"/></svg>
-      </span>
+  <div class="w-screen h-screen fixed block top-0 left-0 bg-white opacity-75 z-50 flex">
+    <span class="text-green-500 opacity-75 top-1/2 m-auto text-center">
+      <font-awesome-icon icon="circle-notch" class="fa-spin fa-5x mb-2"/>
       <p class="text-base">
         {{ message }}
       </p>
-    </div>
+    </span>
   </div>
 </template>
 

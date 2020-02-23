@@ -1,15 +1,14 @@
 <template>
   <div class="flex h-screen">
-    <div class="m-auto text-center">
-      <span class="text-grey">
-        <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="heroicon-ui" d="M4.06 13a8 8 0 0 0 5.18 6.51A18.5 18.5 0 0 1 8.02 13H4.06zm0-2h3.96a18.5 18.5 0 0 1 1.22-6.51A8 8 0 0 0 4.06 11zm15.88 0a8 8 0 0 0-5.18-6.51A18.5 18.5 0 0 1 15.98 11h3.96zm0 2h-3.96a18.5 18.5 0 0 1-1.22 6.51A8 8 0 0 0 19.94 13zm-9.92 0c.16 3.95 1.23 7 1.98 7s1.82-3.05 1.98-7h-3.96zm0-2h3.96c-.16-3.95-1.23-7-1.98-7s-1.82 3.05-1.98 7zM12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20z"/></svg>
-      </span>
-      <p class="text-2xl">
-        {{ error.title }}
-      </p>
-      <p class="text-base">
-        {{ error.message }}
-      </p>
+    <div class="m-auto text-center w-2/3">
+      <font-awesome-layers class="fa-10x mb-10">
+        <font-awesome-icon icon="globe-americas" transform="grow-4" class="text-gray-500"/>
+        <font-awesome-icon :icon="['far', 'circle']" transform="grow-5" class="outline text-white"/>
+        <font-awesome-icon icon="times" class="cross text-red-500" transform="shrink-8 right-5 up-5"/>
+      </font-awesome-layers>
+      <h1 class="text-3xl mb-3 text-gray-800">{{ error.title }}</h1>
+      <p class="text-base text-gray-800">{{ error.message }}</p>
+      <p class="invisible">{{ error.reason }}</p>
     </div>
   </div>
 </template>
@@ -22,3 +21,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.outline path {
+  stroke: white;
+  stroke-width: 20px;
+}
+.cross path {
+  stroke: white;
+  stroke-width: 20px;
+}
+</style>
