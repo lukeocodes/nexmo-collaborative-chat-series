@@ -1,13 +1,17 @@
-const createError = require('http-errors');
-const logger = require('morgan');
 const express = require('express');
 const path = require('path');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+
+const createError = require('http-errors');
 const cors = require('cors');
+
 const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use('/api/webhook', cors(), require('./routes/webhook'));
 app.use('/api/user', require('./routes/user'));

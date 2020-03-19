@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'Error',
+  name: 'Loading',
   props: {
     message: String
   }

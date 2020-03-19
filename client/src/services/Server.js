@@ -1,3 +1,5 @@
+// src/services/Server.js
+
 import Api from '@/services/Api'
 
 export default {
