@@ -16,7 +16,7 @@
     "@fortawesome/vue-fontawesome": "^0.1.9",
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
-    "markdown-it": "^10.0.0",
+    "markdown-it": "^12.3.2",
     "moment": "^2.24.0",
     "nexmo-client": "^6.0.7",
     "slack-markdown-it": "^1.0.5",
