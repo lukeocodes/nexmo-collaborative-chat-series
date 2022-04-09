@@ -17,7 +17,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
     "markdown-it": "^10.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "nexmo-client": "^6.0.7",
     "slack-markdown-it": "^1.0.5",
     "tailwindcss": "^1.2.0",
